@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block body %}
+{% embed 'default/form_container.html.twig' %}
+    {% block form_title %}Вход{% endblock %}
+    {% block form_body %}
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <span class="form-error-icon badge badge-danger text-uppercase">DANGER</span>
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+        <form class="mb-4" method="post">
+            <div class="form-group">
+                <label for="username" class="required">Потребителско Име</label>
+                <input id="username"
+                       name="username"
+                       value="{{ last_username }}"
+                       class="form-control"
+                       type="text"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="required">Парола</label>
+                <input id="password"
+                       name="password"
+                       class="form-control"
+                       type="password"
+                       required>
+            </div>
+            <div class="form-group">
+                <button type="submit"
+                        class="btn-primary btn">
+                    Вход
+                </button>
+            </div>
+            <input name="login_token" value="{{ csrf_token("authenticate") }}" type="hidden">
+        </form>
+    {% endblock %}
+{% endembed %}
+{% endblock %}
+
+

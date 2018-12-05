@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Photo index{% endblock %}
+
+{% block body %}
+    <h1>Снимки</h1>
+    {% if app.user %}
+        <a href="{{ path('photo_new') }}">Upload a photo</a>
+    {% endif %}
+{% endblock %}

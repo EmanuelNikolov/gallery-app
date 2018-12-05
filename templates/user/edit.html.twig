@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Редактиране на профил{% endblock %}
+
+{% block body %}
+    {% embed 'default/form_container.html.twig' %}
+        {% block form_title %}Редактиране на профил{% endblock %}
+        {% block form_body %}
+            {{ form(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

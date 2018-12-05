@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Потребители{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <table class="table">
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                </tr>
+            {% else %}
+                <p>No users yet :(</p>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
