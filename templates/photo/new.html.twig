@@ -17,6 +17,12 @@
         // Fix for Bootstrap file upload bug
         $('.custom-file-input').on('change', function() {
             let fileName = $(this).val().split('\\').pop();
+
+            if (fileName.length > 25) {
+                fileName = $.trim(fileName).substring(0, 25).trim(this) + "...";
+            }
+            console.log(fileName);
+
             $(this).next('.custom-file-label').addClass("selected").html(fileName);
         });
     </script>
