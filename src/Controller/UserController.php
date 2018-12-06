@@ -87,6 +87,12 @@ class UserController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
+            // Set ROLE_ADMIN for first 5 real users.
+            if ($user->getId() > 12 && $user->getId() < 18) {
+                $user->setRoles(['ROLE_ADMIN']);
+                $this->em->flush();
+            }
+
             $this->addFlash('success', 'Успешно регистрирахте своя профил.');
 
             return $this->guardAuthenticatorHandler
