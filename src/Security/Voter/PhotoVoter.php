@@ -5,20 +5,12 @@ namespace App\Security\Voter;
 use App\Entity\Photo;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class PhotoVoter extends Voter
 {
 
     public const DELETE = 'PHOTO_DELETE';
-
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
 
     protected function supports($attribute, $subject)
     {
@@ -34,10 +26,6 @@ class PhotoVoter extends Voter
 
         if (!$user instanceof UserInterface) {
             return false;
-        }
-
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
         }
 
         return $this->canEdit($subject, $user);

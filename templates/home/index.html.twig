@@ -6,7 +6,9 @@
     <div class="mb-4">
         <div class="container-fluid justify-content-center align-items-center">
             <h1 class="text-center mb-4">Последно качени снимки</h1>
-            {{ include('photo/_list.html.twig') }}
+            {% embed 'photo/_list.html.twig' with {'pagination': photos} %}
+                {% block paginator %}{% endblock %}
+            {% endembed %}
         </div>
     </div>
 {% endblock %}

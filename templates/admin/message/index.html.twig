@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container text-center">
         <h1 class="mb-4">Потребителски съобщения</h1>
-        <div class="row">
+        <div class="row text-center">
             {% for message in pagination %}
                 <div class="col-12 col-md-6">
                     <div class="card border-secondary mb-3">
@@ -21,7 +21,9 @@
                     </div>
                 </div>
             {% else %}
-                <p>Няма съобщения за преглеждане.</p>
+                <div class="col-12 col-md-6 mx-auto">
+                    <p>Няма съобщения за преглеждане.</p>
+                </div>
             {% endfor %}
         </div>
     </div>

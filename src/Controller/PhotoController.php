@@ -50,7 +50,7 @@ class PhotoController extends AbstractController
         $user = $this->getUser();
 
         if ($user->getPhotos()->count() >= User::MAX_PHOTOS) {
-            $this->addFlash('notice', 'Всеки потребител може да качва не повече от 10 снимки.');
+            $this->addFlash('danger', 'Всеки потребител може да качва не повече от 10 снимки.');
 
             return $this->redirectToRoute('photo_index');
         }

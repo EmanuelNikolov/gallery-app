@@ -11,12 +11,12 @@
                     <div class="card-header">Информация за потребителя</div>
                     <div class="card-body">
                         <p class="card-text">Дата на регистрация: {{ user.createdOn|date('d/m/Y H:i:s') }}</p>
-                        <p class="card-text">Брой снимки: {{ user.photos|length }}</p>
+                        <p class="card-text">Брой качени снимки: {{ user.photos|length }}</p>
                     </div>
                 </div>
             </div>
         </div>
-        {% embed 'photo/_list.html.twig' with {'pagination': user.photos} %}
+        {% embed 'admin/photo/_list.html.twig' with {'pagination': user.photos} %}
             {% block paginator %}{% endblock %}
         {% endembed %}
     </div>

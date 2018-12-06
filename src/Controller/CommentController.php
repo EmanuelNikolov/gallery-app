@@ -23,7 +23,7 @@ class CommentController extends AbstractController
     public function new(Request $request, Photo $photo): Response
     {
         if ($photo->getComments()->count() >= Photo::MAX_COMMENTS) {
-            $this->addFlash('notice', 'Всяка снимка може да има не повече от 10 коментара.');
+            $this->addFlash('danger', 'Всяка снимка може да има не повече от 10 коментара.');
 
             return $this->redirectToRoute('photo_show', [
               'id' => $photo->getId(),

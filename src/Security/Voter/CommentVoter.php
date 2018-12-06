@@ -5,20 +5,12 @@ namespace App\Security\Voter;
 use App\Entity\Comment;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class CommentVoter extends Voter
 {
 
     public const DELETE = 'COMMENT_DELETE';
-
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
 
     protected function supports($attribute, $subject)
     {
@@ -34,10 +26,6 @@ class CommentVoter extends Voter
 
         if (!$user instanceof UserInterface) {
             return false;
-        }
-
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
         }
 
         return $this->canDelete($subject, $user);
