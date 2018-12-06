@@ -66,7 +66,11 @@ class CommentController extends AbstractController
 
     /**
      * @Route("/{id}", name="comment_delete", methods="DELETE")
-     * @IsGranted("COMMENT_DELETE", subject="comment")
+     * @IsGranted(
+     *     "COMMENT_DELETE",
+     *     subject="comment",
+     *     message="Само потребителя създал коментара може да го изтрие."
+     * )
      */
     public function delete(Request $request, Comment $comment): Response
     {

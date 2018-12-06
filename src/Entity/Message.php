@@ -48,6 +48,16 @@ class Message
      */
     private $content;
 
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $createdOn;
+
+    public function __construct()
+    {
+        $this->createdOn = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +95,18 @@ class Message
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getCreatedOn(): ?\DateTimeImmutable
+    {
+        return $this->createdOn;
+    }
+
+    public function setCreatedOn(\DateTimeImmutable $createdOn): self
+    {
+        $this->createdOn = $createdOn;
 
         return $this;
     }

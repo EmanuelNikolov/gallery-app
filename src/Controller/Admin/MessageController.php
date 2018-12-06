@@ -17,7 +17,7 @@ class MessageController extends AbstractController
 {
 
     /**
-     * @Route("/", name="message_show", methods="GET")
+     * @Route("/", name="admin_message_index", methods="GET")
      */
     public function index(
       Request $request,
@@ -30,25 +30,25 @@ class MessageController extends AbstractController
           MessageRepository::PAGE_LIMIT
         );
 
-        return $this->render('message/index.html.twig', [
-          'messages' => $pagination,
+        return $this->render('admin/message/index.html.twig', [
+          'pagination' => $pagination,
         ]);
     }
 
-    private function sendEmail(\Swift_Mailer $mailer, Message $message): int
+    /**
+     * @Route("/{id}", name="admin_message_delete", methods="DELETE")
+     */
+    public function delete(Request $request, Message $message): Response
     {
-        $message = (new \Swift_Message())
-          ->setSubject('Съобщение от ' . $message->getName())
-          ->setFrom($this->getParameter('system_email'))
-          ->setTo($this->getParameter('system_support_email'))
-          ->setBody(
-            $this->renderView('email/message.html.twig', [
-                'message' => $message,
-              ]
-            ),
-            'text/html'
-          );
+        if ($this->isCsrfTokenValid('delete' . $message->getId(),
+          $request->request->get('_token'))) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($message);
+            $em->flush();
+        }
 
-        return $mailer->send($message);
+        $this->addFlash('success', 'Съобщението беше успешно изтрито.');
+
+        return $this->redirectToRoute('admin_message_index');
     }
 }

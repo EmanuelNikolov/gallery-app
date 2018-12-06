@@ -106,7 +106,7 @@ class PhotoController extends AbstractController
      * @IsGranted(
      *     "PHOTO_DELETE",
      *     subject="photo",
-     *     message="Само потребителя качил снимката може да я трие."
+     *     message="Само потребителя качил снимката може да я изтрие."
      * )
      */
     public function delete(Request $request, Photo $photo): Response

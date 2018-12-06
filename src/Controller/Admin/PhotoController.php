@@ -43,4 +43,21 @@ class PhotoController extends AbstractController
     {
         return $this->render('admin/photo/show.html.twig', ['photo' => $photo]);
     }
+
+    /**
+     * @Route("/{id}", name="admin_photo_delete", methods="DELETE")
+     */
+    public function delete(Request $request, Photo $photo): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $photo->getId(),
+          $request->request->get('_token'))) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($photo);
+            $em->flush();
+        }
+
+        $this->addFlash('success', 'Снимката беше успешно изтрита.');
+
+        return $this->redirectToRoute('admin_photo_index');
+    }
 }

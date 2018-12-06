@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-100">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -8,10 +8,10 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}Начало{% endblock %}</title>
     {% block stylesheets %}{% endblock %}
 </head>
-<body class="h-100">
+<body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Галерия</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -58,7 +58,9 @@
                             {{ app.user.username }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right text-center">
-                            <a class="dropdown-item" href="{{ path('admin_home_index') }}">Администраторски панел</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="dropdown-item" href="{{ path('admin_home_index') }}">Администраторски панел</a>
+                            {% endif %}
                             <a class="dropdown-item" href="{{ path('user_edit') }}">Редактиране на профил</a>
                             <a class="dropdown-item" href="{{ path('security_logout') }}">Изход</a>
                         </div>

@@ -9,7 +9,7 @@
                 <img class="img-fluid rounded mb-3" src="{{ asset('uploads/img/' ~ photo.path) }}">
             </div>
         </div>
-            {{ include('photo/_delete_form.html.twig') }}
+            {{ include('admin/photo/_delete_form.html.twig') }}
         <h1 class="mb-4">Коментари</h1>
         {% for comment in photo.comments %}
             <div class="row mb-3">
@@ -21,7 +21,7 @@
                         </div>
                         <div class="card-footer text-secondary d-flex justify-content-between align-items-center">
                             {{ comment.publishedOn|date('d/m/Y H:i:s') }}
-                            {{ include('comment/_delete_form.html.twig') }}
+                            {{ include('admin/comment/_delete_form.html.twig') }}
                         </div>
                     </div>
                 </div>
