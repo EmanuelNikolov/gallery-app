@@ -1,0 +1,46 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Потребители{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-lg-10 mx-auto text-center">
+                <h1 class="mb-4">Потребители</h1>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Потребителско име</th>
+                        <th>
+                            Дата на регистрация
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in pagination %}
+                        <tr>
+                            <td class="align-middle">
+                                <a href="{{ path('admin_user_show', {'id': user.id}) }}">
+                                        <span class="d-inline-block text-truncate"
+                                              style="max-width: 130px;">{{ user.username }}</span>
+                                </a>
+                            </td>
+                            <td>
+                                {{ user.createdOn|date('d/m/Y H:i:s') }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>Все още няма потребители :(</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+{% endblock %}
+

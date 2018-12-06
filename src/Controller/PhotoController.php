@@ -3,9 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Photo;
+use App\Entity\User;
 use App\Form\PhotoType;
 use App\Repository\PhotoRepository;
+use Knp\Component\Pager\PaginatorInterface;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,28 +25,65 @@ class PhotoController extends AbstractController
     /**
      * @Route("/", name="photo_index", methods="GET")
      */
-    public function index(PhotoRepository $photoRepository): Response
-    {
+    public function index(
+      Request $request,
+      PhotoRepository $repo,
+      PaginatorInterface $paginator
+    ): Response {
+        $pagination = $paginator->paginate(
+          $repo->findBy([], ['uploadedOn' => 'DESC']),
+          $request->query->getInt('page', 1),
+          PhotoRepository::PAGE_LIMIT
+        );
+
         return $this->render('photo/index.html.twig', [
-          'photos' => $photoRepository->findBy([], ['uploadedOn' => 'DESC']),
+          'pagination' => $pagination,
         ]);
     }
 
     /**
      * @Route("/new", name="photo_new", methods="GET|POST")
+     * @IsGranted("ROLE_USER")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, LoggerInterface $logger): Response
     {
-        $photo = new Photo();
+        $user = $this->getUser();
+
+        if ($user->getPhotos()->count() >= User::MAX_PHOTOS) {
+            $this->addFlash('notice', 'Всеки потребител може да качва не повече от 10 снимки.');
+
+            return $this->redirectToRoute('photo_index');
+        }
+
+        $photo = (new Photo())->setUser($user);
         $form = $this->createForm(PhotoType::class, $photo);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($photo);
-            $em->flush();
+            $file = $photo->getImage();
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
 
-            return $this->redirectToRoute('photo_index');
+            try {
+                $file->move(
+                  $this->getParameter('photos_dir'),
+                  $fileName
+                );
+
+                $photo->setPath($fileName);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($photo);
+                $em->flush();
+
+                $this->addFlash('success', 'Снимката беше добавена успешно.');
+
+                return $this->redirectToRoute('photo_show', [
+                  'id' => $photo->getId(),
+                ]);
+            } catch (FileException $e) {
+                $form->addError(new FormError('Възникна грешка при качването на файла.'));
+                $logger->critical($e->getMessage(), ['file' => $e->getFile()]);
+            }
         }
 
         return $this->render('photo/new.html.twig', [
@@ -58,28 +101,13 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="photo_edit", methods="GET|POST")
-     */
-    public function edit(Request $request, Photo $photo): Response
-    {
-        $form = $this->createForm(PhotoType::class, $photo);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('photo_index',
-              ['id' => $photo->getId()]);
-        }
-
-        return $this->render('photo/edit.html.twig', [
-          'photo' => $photo,
-          'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/{id}", name="photo_delete", methods="DELETE")
+     * @IsGranted("ROLE_USER")
+     * @IsGranted(
+     *     "PHOTO_DELETE",
+     *     subject="photo",
+     *     message="Само потребителя качил снимката може да я трие."
+     * )
      */
     public function delete(Request $request, Photo $photo): Response
     {
@@ -89,6 +117,8 @@ class PhotoController extends AbstractController
             $em->remove($photo);
             $em->flush();
         }
+
+        $this->addFlash('success', 'Снимката беше успешно изтрита.');
 
         return $this->redirectToRoute('photo_index');
     }

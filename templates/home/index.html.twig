@@ -3,12 +3,10 @@
 {% block title %}Начало{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1 class="text-center">Последно качени снимки</h1>
-        {#{% for photo in photos %}#}
-
-        {#{% else %}#}
-        {#<p>Още няма добавени снимки :(</p>#}
-        {#{% endfor %}#}
+    <div class="mb-4">
+        <div class="container-fluid justify-content-center align-items-center">
+            <h1 class="text-center mb-4">Последно качени снимки</h1>
+            {{ include('photo/_list.html.twig') }}
+        </div>
     </div>
 {% endblock %}

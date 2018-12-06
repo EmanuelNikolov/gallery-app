@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends ('admin' in app.request.headers.get('referer') ? 'admin/' : '') ~ 'base.html.twig' %}
 
 {% block title %}Редактиране на профил{% endblock %}
 

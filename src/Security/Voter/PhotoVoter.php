@@ -2,28 +2,29 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\GameCollection;
+use App\Entity\Photo;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class PhotoVoter extends Voter
 {
 
-    public const EDIT = 'PHOTO_EDIT';
+    public const DELETE = 'PHOTO_DELETE';
+
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
 
     protected function supports($attribute, $subject)
     {
-        return ($attribute === self::EDIT) && $subject instanceof GameCollection;
+        return ($attribute === self::DELETE) && ($subject instanceof Photo);
     }
 
-    /**
-     * @param string $attribute
-     * @param GameCollection $subject
-     * @param TokenInterface $token
-     *
-     * @return bool
-     */
     protected function voteOnAttribute(
       $attribute,
       $subject,
@@ -35,13 +36,17 @@ class PhotoVoter extends Voter
             return false;
         }
 
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         return $this->canEdit($subject, $user);
 
-        // throw new \LogicException("This shouldn't be reached.");
+        throw new \LogicException("This shouldn't be reached.");
     }
 
-    private function canEdit(GameCollection $collection, UserInterface $user): bool
+    private function canEdit(Photo $photo, UserInterface $user): bool
     {
-        return $collection->getUser() === $user;
+        return $photo->getUser() === $user;
     }
 }

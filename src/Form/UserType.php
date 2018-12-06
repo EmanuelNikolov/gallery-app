@@ -20,17 +20,20 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-          ->add('username', TextType::class)
+          ->add('username', TextType::class, [
+            'label' => 'Потребителско Име',
+              'help' => 'Потребителското име трябва да е между 5 и 25 символа.',
+          ])
           ->add('plainPassword', RepeatedType::class, [
             'type' => PasswordType::class,
-            'invalid_message' => 'Паролите трябва да съвпадат',
+            'invalid_message' => 'Паролите трябва да съвпадат.',
             'first_options' => [
               'label' => 'Парола',
-              'help' => 'Паролата ви трябва да е над 8 символа.',
+              'help' => 'Паролата трябва да бъде поне 8 символа.',
             ],
             'second_options' => [
               'label' => 'Повторете Паролата',
-              'help' => 'Паролите трябва да съвпадат',
+              'help' => 'Паролите трябва да съвпадат.',
             ],
             'required' => false,
           ])
@@ -46,7 +49,6 @@ class UserType extends AbstractType
               $form = $event->getForm();
 
               if (null !== $user->getId()) {
-//                  $form->remove('username');
                   $form->remove('register');
                   $form->add('submit', SubmitType::class, [
                     'label' => 'Редактиране',

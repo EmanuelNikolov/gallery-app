@@ -1,11 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Photo{% endblock %}
+{% block title %}Качване на снимка{% endblock %}
 
 {% block body %}
-    <h1>Create new Photo</h1>
+    {% embed 'default/form_container.html.twig' %}
+        {% block form_title %}Качване на снимка{% endblock %}
+        {% block form_body %}
+            {{ form(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
 
-    {{ include('photo/_form.html.twig') }}
-
-    <a href="{{ path('photo_index') }}">back to list</a>
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        // Fix for Bootstrap file upload bug
+        $('.custom-file-input').on('change', function() {
+            let fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+    </script>
 {% endblock %}

@@ -15,6 +15,10 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 class UserRepository extends ServiceEntityRepository
 {
 
+    public const PAGE_LIMIT = 10;
+
+    public const ADMIN_LIMIT = 5;
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, User::class);
@@ -24,11 +28,10 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
           ->select('COUNT(p) AS HIDDEN photos', 'u')
-          ->join('u.photos', 'p')
+          ->leftJoin('u.photos', 'p')
           ->orderBy('photos', 'DESC')
           ->groupBy('u')
           ->getQuery()
           ->getResult();
     }
-
 }

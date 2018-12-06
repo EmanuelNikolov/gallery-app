@@ -2,20 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Game;
 use App\Entity\User;
-use App\Event\UserEvent;
-use App\Form\UserEditType;
-use App\Form\UserGeneralType;
-use App\Form\UserNewPasswordType;
-use App\Form\UserResetPasswordType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Security\UserLoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,10 +52,19 @@ class UserController extends AbstractController
     /**
      * @Route("/users", name="user_index", methods={"GET"})
      */
-    public function index(UserRepository $repo): Response
-    {
+    public function index(
+      Request $request,
+      UserRepository $repo,
+      PaginatorInterface $paginator
+    ): Response {
+        $pagination = $paginator->paginate(
+          $repo->findByPhotosCount(),
+          $request->query->getInt('page', 1),
+          UserRepository::PAGE_LIMIT
+        );
+
         return $this->render('user/index.html.twig', [
-          'users' => $repo->findByPhotosCount(),
+          'pagination' => $pagination,
         ]);
     }
 
@@ -98,47 +103,50 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function show(User $user): Response {
-        return $this->render('user/show.html.twig', [
-          'user' => $user,
-        ]);
-    }
-
     /**
-     * @Route("/profile/edit", name="user_edit", methods={"GET|POST"})
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     *
-     * @return Response
+     * @Route("/user/edit", name="user_edit", methods={"GET|POST"})
+     * @IsGranted("ROLE_USER")
      */
     public function update(
       Request $request,
       UserPasswordEncoderInterface $encoder
     ): Response {
         $user = $this->getUser();
+        $username = $user->getUsername();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $plainPassword = $user->getPlainPassword();
+            $isUsernameUpdated = $user->getUsername() !== $username;
+            $isPasswordUpdated = null !== $plainPassword;
 
-            if (null !== $plainPassword) {
-                $password = $encoder->encodePassword($user, $plainPassword);
-                $user->setPassword($password);
+            if ($isUsernameUpdated || $isPasswordUpdated) {
+                if ($isUsernameUpdated) {
+                    $this->addFlash('success',
+                      'Успешно променихте потребителското си име.');
+                }
 
-                $this->addFlash('success', 'Успешно променихте паролата си');
+                if ($isPasswordUpdated) {
+                    $password = $encoder->encodePassword($user, $plainPassword);
+                    $user->setPassword($password);
+
+                    $this->addFlash('success',
+                      'Успешно променихте паролата си.');
+                }
+
+                $this->em->flush();
+
+                return $this->guardAuthenticatorHandler
+                  ->authenticateUserAndHandleSuccess(
+                    $user,
+                    $request,
+                    $this->userLoginAuthenticator,
+                    'main'
+                  );
+            } else {
+                $form->addError(new FormError('За да редактирате профила си, трябва потребителското име или паролата, да бъдат променени.'));
             }
-
-            $this->em->flush();
-
-            return $this->guardAuthenticatorHandler
-              ->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $this->userLoginAuthenticator,
-                'main'
-              );
         }
 
         $this->em->refresh($user);

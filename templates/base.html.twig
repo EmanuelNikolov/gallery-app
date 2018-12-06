@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,9 +11,9 @@
     <title>{% block title %}Welcome!{% endblock %}</title>
     {% block stylesheets %}{% endblock %}
 </head>
-<body>
+<body class="h-100">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Gallery App</a>
+        <a class="navbar-brand" href="#">Галерия</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse"
                 data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -26,14 +26,26 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('home_index') }}">Начало</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('photo_index') }}">Снимки</a>
+                <li class="nav-item dropdown">
+                    {% if app.user %}
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="navbarDropdownPhoto" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Снимки
+                        </a>
+                        <div class="dropdown-menu text-center">
+                            <a class="dropdown-item" href="{{ path('photo_index') }}">Виж всички</a>
+                            <a class="dropdown-item" href="{{ path('photo_new') }}">Качи снимка</a>
+                        </div>
+                    {% else %}
+                        <a class="nav-link" href="{{ path('photo_index') }}">Снимки</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('user_index') }}">Потребители</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contacts">Контакти</a>
+                    <a class="nav-link" href="{{ path('message_new') }}">Контакти</a>
                 </li>
 
             </ul>
@@ -41,22 +53,23 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown text-center">
                         <a class="nav-link dropdown-toggle" href="#"
-                           id="navbarDropdown" role="button" data-toggle="dropdown"
+                           id="navbarDropdownProfile" role="button" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">
                             {{ app.user.username }}
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ path('user_edit') }}">Промяна на профил</a>
+                        <div class="dropdown-menu dropdown-menu-right text-center">
+                            <a class="dropdown-item" href="{{ path('admin_home_index') }}">Администраторски панел</a>
+                            <a class="dropdown-item" href="{{ path('user_edit') }}">Редактиране на профил</a>
                             <a class="dropdown-item" href="{{ path('security_logout') }}">Изход</a>
                         </div>
                     </li>
                 </ul>
             {% else %}
                 <ul class="navbar-nav m-2">
-                    <li class="navbar-btn m-1 d-flex justify-content-center">
+                    <li class="navbar-btn my-1 my-lg-0 mx-1 d-flex justify-content-center">
                         <a class="btn btn-sm btn-success" href="{{ path('security_login') }}">Вход</a>
                     </li>
-                    <li class="navbar-btn m-1 d-flex justify-content-center">
+                    <li class="navbar-btn my-1 my-lg-0 mx-1 d-flex justify-content-center">
                         <a class="btn btn-sm btn-success" href="{{ path('user_register') }}">Регистрация</a>
                     </li>
                 </ul>
@@ -69,6 +82,7 @@
     </div>
 
     {% block body %}{% endblock %}
+
     {% block javascripts %}
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
                 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

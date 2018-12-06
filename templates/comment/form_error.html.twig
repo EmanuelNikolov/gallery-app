@@ -1,0 +1,12 @@
+{% extends (is_granted('ROLE_ADMIN') ? 'admin/' : '') ~ 'base.html.twig' %}
+
+{% block title %}Добавяне на коментар{% endblock %}
+
+{% block body %}
+    {% embed 'default/form_container.html.twig' %}
+        {% block form_title %}Добавяне на коментар{% endblock %}
+        {% block form_body %}
+            {{ include('comment/_form.html.twig') }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

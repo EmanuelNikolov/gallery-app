@@ -1,0 +1,74 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Начало{% endblock %}
+
+{% block body %}
+    <div class="mb-4">
+        <div class="container-fluid justify-content-center align-items-center mx-auto">
+            <div class="row">
+                <div class="col-12 col-md-6 text-center">
+                    <h2 class="mb-4">Последно регистрирани потребители</h2>
+                    <table class="table table-bordered align-center">
+                        <thead>
+                        <tr>
+                            <th>Потребителско име</th>
+                            <th>Дата на регистрация</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td class="align-middle">
+                                    <a href="{{ path('admin_user_show', {'id': user.id}) }}">
+                                        <span class="d-inline-block text-truncate"
+                                              style="max-width: 130px;">{{ user.username }}</span>
+                                    </a>
+                                </td>
+                                <td>{{ user.createdOn|date('d/m/Y H:i:s') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Все още няма потребители :(</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12 col-md-6 text-center">
+                    <h2 class="text-center mb-4">Последно качени снимки</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Снимка</th>
+                            <th>Потребител</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for photo in photos %}
+                            <tr>
+                                <td class="d-flex justify-content-center">
+                                    <a href="{{ path('admin_photo_show', {'id': photo.id}) }}">
+                                        <img class="img-fluid rounded img-thumbnail"
+                                             src="{{ asset('uploads/img/' ~ photo.path) }}"
+                                             style="width: 10rem">
+                                    </a>
+                                </td>
+                                <td class="align-middle">
+                                    <a href="{{ path('admin_user_show', {'id': photo.user.id}) }}">
+                                        <span class="d-inline-block text-truncate"
+                                              style="max-width: 130px;">{{ photo.user.username }}</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Все още няма добавени снимки :(</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

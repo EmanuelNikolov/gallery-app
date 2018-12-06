@@ -27,6 +27,8 @@ class User implements UserInterface, EquatableInterface
 
     public const ROLE_ADMIN = "ROLE_ADMIN";
 
+    public const MAX_PHOTOS = 10;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -36,12 +38,12 @@ class User implements UserInterface, EquatableInterface
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlank(groups={"edit"})
+     * @Assert\NotBlank(message="Това поле не може да бъде празно", groups={"edit"})
      * @Assert\Length(
      *      min = 5,
      *      max = 25,
-     *      minMessage = "Потребителското име трябва да бъде поне {{ limit }} символа",
-     *      maxMessage = "Потребителското име трябва да бъде не по-дълго от {{ limit }} символа",
+     *      minMessage = "Потребителското име трябва да бъде поне {{ limit }} символа.",
+     *      maxMessage = "Потребителското име трябва да бъде не по-дълго от {{ limit }} символа.",
      *     groups={"edit"}
      * )
      */
@@ -53,12 +55,12 @@ class User implements UserInterface, EquatableInterface
     private $password;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Това поле не може да бъде празно")
      * @Assert\Length(
      *      min = 8,
      *      max = 50,
-     *      minMessage = "Паролата трябва да бъде поне {{ limit }} символа",
-     *      maxMessage = "Паролата трябва да бъде не по-дълга от {{ limit }} символа",
+     *      minMessage = "Паролата трябва да бъде поне {{ limit }} символа.",
+     *      maxMessage = "Паролата трябва да бъде не по-дълга от {{ limit }} символа.",
      *      groups={"edit"}
      * )
      */

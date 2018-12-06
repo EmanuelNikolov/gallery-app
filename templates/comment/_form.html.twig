@@ -1,0 +1,4 @@
+<h5>Добавяне на коментар</h5>
+{{ form_start(form, {action: path('comment_new', {'id': photo.id})}) }}
+    {{ form_widget(form) }}
+{{ form_end(form) }}

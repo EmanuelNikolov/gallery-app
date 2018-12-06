@@ -1,0 +1,12 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Снимки{% endblock %}
+
+{% block body %}
+    <div class="mb-4">
+        <div class="container-fluid justify-content-center align-items-center">
+            <h1 class="text-center mb-4">Снимки</h1>
+            {{ include('/admin/photo/_list.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
