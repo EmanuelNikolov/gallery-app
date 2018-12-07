@@ -16,7 +16,7 @@ class PhotoType extends AbstractType
     {
         $builder
           ->add('image', FileType::class, [
-            'label' => null,
+            'label' => false,
             'attr' => ['placeholder' => 'Изберете снимка'],
           ])
           ->add('register', SubmitType::class, [

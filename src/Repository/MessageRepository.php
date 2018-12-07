@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 class MessageRepository extends ServiceEntityRepository
 {
 
-    public const PAGE_LIMIT = 10;
+    public const PAGE_LIMIT = 4;
 
     public function __construct(RegistryInterface $registry)
     {

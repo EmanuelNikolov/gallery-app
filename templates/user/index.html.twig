@@ -11,9 +11,7 @@
                     <thead>
                     <tr>
                         <th>Потребителско име</th>
-                        <th>
-                            Брой качени снимки
-                        </th>
+                        <th>Брой качени снимки</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -23,9 +21,7 @@
                                     <span class="d-inline-block text-truncate"
                                           style="max-width: 130px;">{{ user.username }}</span>
                             </td>
-                            <td>
-                                {{ user.photos|length }}
-                            </td>
+                            <td>{{ user.photos|length }}</td>
                         </tr>
                     {% else %}
                         <tr>

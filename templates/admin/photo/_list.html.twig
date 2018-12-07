@@ -5,7 +5,11 @@
                 <a href="{{ path('admin_photo_show', {'id': photo.id}) }}">
                     <img class="img-fluid rounded mb-2" src="{{ asset('uploads/img/' ~ photo.path) }}">
                 </a>
-                {{ include('admin/photo/_delete_form.html.twig') }}
+                <div class="mb-2">
+                    <a href="{{ path('admin_photo_show', {'id': photo.id}) }}" class="btn btn-primary btn-sm">Покажи</a>
+                    {{ include('admin/photo/_delete_form.html.twig') }}
+                </div>
+
             </div>
         {% endfor %}
     </div>

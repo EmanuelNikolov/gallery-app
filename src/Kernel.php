@@ -27,6 +27,7 @@ class Kernel extends BaseKernel
 
     public function registerBundles()
     {
+        date_default_timezone_set('Europe/Sofia');
         $contents = require $this->getProjectDir().'/config/bundles.php';
         foreach ($contents as $class => $envs) {
             if ($envs[$this->environment] ?? $envs['all'] ?? false) {

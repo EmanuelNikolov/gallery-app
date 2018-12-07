@@ -5,15 +5,14 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-lg-10 mx-auto text-center">
+            <div class="col-12 mx-auto text-center">
                 <h1 class="mb-4">Потребители</h1>
                 <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th>Потребителско име</th>
-                        <th>
-                            Дата на регистрация
-                        </th>
+                        <th>Дата на регистрация</th>
+                        <th>Брой качени снимки</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -25,9 +24,8 @@
                                               style="max-width: 130px;">{{ user.username }}</span>
                                 </a>
                             </td>
-                            <td>
-                                {{ user.createdOn|date('d/m/Y H:i:s') }}
-                            </td>
+                            <td>{{ user.createdOn|date('d/m/Y H:i:s') }}</td>
+                            <td>{{ user.photos|length }}</td>
                         </tr>
                     {% else %}
                         <tr>
